@@ -1,49 +1,54 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
-# 1. Cấu hình trang & Theme
+# 1. Cấu hình trang
 st.set_page_config(page_title="Hệ thống Phân tích GPA", layout="wide")
 
-# Thiết lập style CSS để tạo hiệu ứng Card chuyên nghiệp
+# CSS tối ưu cho trình chiếu: Chữ to, đậm, màu sắc tương phản cao
 st.markdown("""
     <style>
-    .stMetric {
-        background-color: #f8f9f9;
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 5px solid #2e86c1;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    /* Phóng to toàn bộ chữ trên giao diện */
+    html, body, [class*="st-"] {
+        font-size: 1.1rem !important;
     }
+    /* Làm nổi bật các thẻ KPI */
+    div[data-testid="stMetric"] {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 2px solid #1a5276;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
+    }
+    /* Chỉnh tiêu đề cực đại */
     .main-title {
         color: #1a5276;
-        font-family: 'Helvetica';
-        font-weight: bold;
+        font-size: 3rem !important;
+        font-weight: 900;
         text-align: center;
-        padding-bottom: 20px;
+        margin-bottom: 30px;
+        text-transform: uppercase;
     }
+    /* Sidebar chữ to dễ chỉnh */
+    .css-1d391kg { font-size: 1.2rem !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- CẤU HÌNH MÀU SẮC ĐỒNG BỘ ---
-PRIMARY_BLUE = "#3498db"
-COLOR_SCALE_BLUE = "Blues"
+# --- CẤU HÌNH MÀU SẮC TƯƠNG PHẢN CAO ---
+NAVY_BLUE = "#1a5276"  # Xanh đậm hẳn để nhìn rõ trên máy chiếu
+LIGHT_BLUE = "#d4e6f1"
+COLOR_SCALE = "Blues"
 
 @st.cache_data
 def load_data():
-    # Đọc dữ liệu
     df = pd.read_excel('Database paper.xlsx')
     df.columns = df.columns.str.strip()
-    
-    # Làm sạch & Ép kiểu
     cols = ['Year', 'GPA', 'Time_Studying', 'Gender', 'Adapt_Learning_Uni', 'Time_SocicalMedia']
     df = df.dropna(subset=cols)
     df = df[(df['GPA'] >= 0) & (df['GPA'] <= 4.0)]
 
-    # Mappings
     ym = {1: 'Năm 1', 2: 'Năm 2', 3: 'Năm 3', 4: 'Năm 4', 5: 'Đã tốt nghiệp'}
-    sm = {1: '< 2 giờ', 2: '2-4 giờ', 3: '4-6 giờ', 4: '6-8 giờ', 5: '> 8 giờ'}
+    sm = {1: '< 2h', 2: '2-4h', 3: '4-6h', 4: '6-8h', 5: '> 8h'}
     am = {1: 'Rất kém', 2: 'Kém', 3: 'T.Bình', 4: 'Khá', 5: 'Tốt'}
 
     df['Year_Label'] = df['Year'].map(ym)
@@ -53,97 +58,76 @@ def load_data():
     
     return df, list(ym.values()), list(sm.values()), list(am.values())
 
-# 2. Xử lý logic dữ liệu
 df_main, y_order, s_order, a_order = load_data()
 
-# --- SIDEBAR: Nơi đặt bộ lọc ---
 with st.sidebar:
-    st.title("Bộ lọc dữ liệu")
-    gender_filter = st.selectbox("Chọn Giới tính", ["Tất cả", "Nam", "Nữ"])
-    st.info("💡 Dashboard cập nhật tự động theo bộ lọc.")
+    st.header("⚙️ Cấu hình")
+    gender_filter = st.selectbox("Lọc Giới tính", ["Tất cả", "Nam", "Nữ"])
+    st.markdown("---")
+    st.write("Dùng cho trình chiếu hội trường")
 
-# Lọc dữ liệu
 df_filtered = df_main if gender_filter == "Tất cả" else df_main[df_main['Gender_Label'] == gender_filter]
 
-# --- MAIN CONTENT ---
-st.markdown("<h1 class='main-title'>DASHBOARD PHÂN TÍCH KẾT QUẢ HỌC TẬP</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-title'>PHÂN TÍCH KẾT QUẢ GPA</h1>", unsafe_allow_html=True)
 
 if df_filtered.empty:
-    st.warning("⚠️ Không có dữ liệu phù hợp.")
+    st.warning("⚠️ Không có dữ liệu.")
 else:
-    # 3. KPI Section
-    kpi1, kpi2, kpi3 = st.columns(3)
-    kpi1.metric("Tổng sinh viên", f"{len(df_filtered):,}")
-    kpi2.metric("GPA Trung bình", f"{df_filtered['GPA'].mean():.2f}")
-    kpi3.metric("Tỷ lệ hiển thị", f"{(len(df_filtered)/len(df_main)*100):.1f}%")
+    # 3. KPI Section - Chữ cực to
+    k1, k2, k3 = st.columns(3)
+    k1.metric("TỔNG SINH VIÊN", f"{len(df_filtered):,}")
+    k2.metric("GPA TRUNG BÌNH", f"{df_filtered['GPA'].mean():.2f}")
+    k3.metric("TỶ LỆ HIỂN THỊ", f"{(len(df_filtered)/len(df_main)*100):.1f}%")
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.write("")
+
+    # Hàm chuẩn hóa layout biểu đồ cho trình chiếu
+    def update_chart_style(fig):
+        fig.update_layout(
+            template='plotly_white',
+            font=dict(size=18, color="black"), # Tăng font biểu đồ lên 18
+            title_font=dict(size=24, color="#1a5276"), # Tiêu đề biểu đồ lên 24
+            margin=dict(t=80, b=50, l=50, r=50)
+        )
+        return fig
 
     # --- HÀNG BIỂU ĐỒ 1 ---
-    col1, col2 = st.columns(2)
-
-    with col1:
+    c1, c2 = st.columns(2)
+    with c1:
         df_bar = df_filtered.groupby('Year_Label', observed=True)['GPA'].mean().reset_index()
         df_bar['Year_Label'] = pd.Categorical(df_bar['Year_Label'], categories=y_order, ordered=True)
-        df_bar = df_bar.sort_values('Year_Label')
-        
-        fig_bar = px.bar(df_bar, x='Year_Label', y='GPA', text_auto='.2f',
-                         title="<b>Biến động GPA theo Năm học</b>",
-                         color_discrete_sequence=[PRIMARY_BLUE])
-        fig_bar.update_layout(template='plotly_white', yaxis_range=[0, 4.5])
-        st.plotly_chart(fig_bar, use_container_width=True)
+        fig_bar = px.bar(df_bar.sort_values('Year_Label'), x='Year_Label', y='GPA', 
+                         text_auto='.2f', title="<b>GPA THEO NĂM HỌC</b>",
+                         color_discrete_sequence=[NAVY_BLUE])
+        fig_bar.update_traces(textfont_size=20, textposition='outside')
+        st.plotly_chart(update_chart_style(fig_bar), use_container_width=True)
 
-    with col2:
+    with c2:
         df_line = df_filtered.groupby('Time_Label', observed=True)['GPA'].mean().reset_index()
         df_line['Time_Label'] = pd.Categorical(df_line['Time_Label'], categories=s_order, ordered=True)
-        df_line = df_line.sort_values('Time_Label')
-        
-        fig_line = px.line(df_line, x='Time_Label', y='GPA', markers=True,
-                           title="<b>Mối liên hệ Thời gian học & GPA</b>")
-        fig_line.update_traces(line=dict(color=PRIMARY_BLUE, width=4))
-        fig_line.update_layout(template='plotly_white', yaxis_range=[0, 4.5])
-        st.plotly_chart(fig_line, use_container_width=True)
+        fig_line = px.line(df_line.sort_values('Time_Label'), x='Time_Label', y='GPA', 
+                           markers=True, title="<b>GPA THEO GIỜ HỌC</b>")
+        fig_line.update_traces(line=dict(color=NAVY_BLUE, width=6), marker=dict(size=15))
+        st.plotly_chart(update_chart_style(fig_line), use_container_width=True)
 
     # --- HÀNG BIỂU ĐỒ 2 ---
-    col3, col4 = st.columns(2)
-
-    with col3:
+    c3, c4 = st.columns(2)
+    with c3:
         df_corr = df_filtered[['Time_Studying', 'Time_SocicalMedia', 'Adapt_Learning_Uni', 'GPA']].corr()
-        fig_heat = px.imshow(df_corr, 
-                             x=['Học tập', 'Mạng xã hội', 'Thích nghi', 'GPA'], 
-                             y=['Học tập', 'Mạng xã hội', 'Thích nghi', 'GPA'], 
-                             text_auto='.2f', color_continuous_scale=COLOR_SCALE_BLUE,
-                             title="<b>Ma trận tương quan biến số</b>")
-        st.plotly_chart(fig_heat, use_container_width=True)
+        fig_heat = px.imshow(df_corr, text_auto='.2f', color_continuous_scale="Blues",
+                             title="<b>MA TRẬN TƯƠNG QUAN</b>",
+                             x=['Học', 'Web', 'Nghi', 'GPA'], y=['Học', 'Web', 'Nghi', 'GPA'])
+        st.plotly_chart(update_chart_style(fig_heat), use_container_width=True)
 
-    with col4:
-        df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(
-            so_luong='count', gpa_tb='mean').reset_index()
-        
-        fig_sun = px.sunburst(
-            df_sun, path=['Year_Label', 'Adapt_Label'], values='so_luong', 
-            color='gpa_tb', color_continuous_scale=COLOR_SCALE_BLUE,
-            title="<b>Cơ cấu Sinh viên & Hiệu quả thích nghi</b>"
-        )
-        st.plotly_chart(fig_sun, use_container_width=True)
+    with c4:
+        df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
+        fig_sun = px.sunburst(df_sun, path=['Year_Label', 'Adapt_Label'], values='so_luong', 
+                              color='gpa_tb', color_continuous_scale="Blues",
+                              title="<b>CƠ CẤU PHÂN CẤP</b>")
+        st.plotly_chart(update_chart_style(fig_sun), use_container_width=True)
 
-# 4. Footer & Story Section
+# 4. Footer & Story
 st.markdown("---")
-
-# 📖 Câu chuyện dữ liệu
-st.markdown("## 📖 Câu chuyện dữ liệu")
-st.markdown("""
-- **Hành vi cá nhân:** Thời gian tự học có tác động tích cực đến GPA, trong khi mạng xã hội ảnh hưởng yếu.  
-- **Yếu tố môi trường:** Chất lượng giảng viên là yếu tố có hệ số tương quan cao nhất đối với GPA.  
-- **Sự khác biệt nhóm:** Sinh viên năm cuối duy trì GPA ổn định hơn.
-""")
-
-# 👥 Đánh giá người dùng
-st.markdown("## 👥 Đánh giá người dùng")
-st.markdown("""
-- **Người dùng 1:** Nhận xét Heatmap trực quan, dễ so sánh các biến.
-- **Người dùng 2:** Sunburst giúp nhìn rõ quy mô sinh viên theo từng cấp.
-- **Người dùng 3:** Dashboard đồng bộ màu sắc chuyên nghiệp.
-""")
-
-st.caption("© 2026 Dashboard Phân tích Dữ liệu Sinh viên.")
+st.markdown("### 📖 TÓM TẮT KẾT QUẢ")
+st.info("1. Chất lượng giảng viên ảnh hưởng lớn nhất đến GPA. \n2. Sinh viên năm cuối có GPA ổn định hơn nhóm mới thích nghi.")
+st.caption("© 2026 Hệ thống Dashboard Trình chiếu")
