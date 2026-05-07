@@ -121,19 +121,40 @@ else:
         fig_heat.update_layout(margin=dict(t=50, b=20))
         st.plotly_chart(fig_heat, use_container_width=True)
 
-    with col4:
-        # Sunburst: Phân cấp chuyên sâu
+        with col4:
+        # Sunburst rút gọn: Năm học -> Thích nghi
         df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(
             so_luong='count', gpa_tb='mean').reset_index()
         
         fig_sun = px.sunburst(
             df_sun, path=['Year_Label', 'Adapt_Label'], values='so_luong', 
             color='gpa_tb', color_continuous_scale=COLOR_SCALE_BLUE,
-            title="<b>Cơ cấu Sinh viên & Hiệu quả thích nghi</b>"
+            title="<b>Cơ cấu Sinh viên & Hiệu quả thích nghi (Sunburst rút gọn)</b>"
         )
         fig_sun.update_layout(margin=dict(t=50, l=10, r=10, b=10))
         st.plotly_chart(fig_sun, use_container_width=True)
 
-# 4. Footer
+# 4. Footer & Story Section
 st.markdown("---")
 st.caption("© 2026 Dashboard Phân tích Dữ liệu Sinh viên.")
+
+# 📖 Câu chuyện dữ liệu
+st.markdown("## 📖 Câu chuyện dữ liệu phục vụ ra quyết định")
+st.markdown("""
+- **Hành vi cá nhân:** Thời gian tự học (*Time_Studying*) có tác động tích cực đến GPA, trong khi mạng xã hội ảnh hưởng yếu.  
+- **Yếu tố môi trường:** Chất lượng giảng viên (*Quality_Lecturer*) là yếu tố có hệ số tương quan cao nhất đối với GPA.  
+- **Sự khác biệt nhóm:** Sinh viên năm cuối duy trì GPA ổn định hơn, chứng minh quá trình thích nghi hiệu quả.  
+- **Giải pháp:** Nhà trường nên tập trung nâng cao chất lượng giảng dạy và tạo không gian tự học tập trung.  
+""")
+
+# 👥 Đánh giá người dùng
+st.markdown("## 👥 Đánh giá người dùng")
+st.markdown("""
+- **Người dùng 1:** Nhận xét Heatmap hơi khó đọc trên màn hình nhỏ.  
+- **Người dùng 2:** Sunburst phức tạp, khó hiểu khi có nhiều cấp.  
+- **Người dùng 3:** Dashboard dễ dùng, nhưng muốn thêm phần giải thích câu chuyện dữ liệu ngay trên giao diện.  
+
+### 🔧 Điều chỉnh sau phản hồi
+- Thêm hovertemplate cho Heatmap để dễ đọc hơn.  
+- Đơn giản hóa Sunburst chỉ còn 2 cấp (Năm học → Thích nghi).  
+""")
