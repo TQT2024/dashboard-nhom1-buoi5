@@ -70,10 +70,34 @@ else:
     with col_chart4:
         df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
         df_sun = df_sun[df_sun['so_luong'] > 0].dropna(subset=['gpa_tb'])
-        df_sun['Year_Label'] = pd.Categorical(df_sun['Year_Label'], categories=y_order, ordered=True)
-        df_sun['Adapt_Label'] = pd.Categorical(df_sun['Adapt_Label'], categories=a_order, ordered=True)
-        df_sun = df_sun.sort_values(['Year_Label', 'Adapt_Label'])
-        fig_sun = px.sunburst(df_sun, path=['Year_Label', 'Adapt_Label'], values='so_luong', color='gpa_tb', range_color=[g_min, g_max], color_continuous_scale='RdYlGn', title="Phân cấp: Quy mô sinh viên & GPA")
-        fig_sun.update_traces(insidetextorientation='radial', leaf=dict(opacity=0.9), marker=dict(line=dict(color='#FFFFFF', width=1.5)), hovertemplate="<b>%{label}</b><br>Số lượng: %{value} SV<br>GPA: %{color:.2f}<extra></extra>", textfont=dict(size=12), sort=False)
-        fig_sun.update_layout(margin=dict(t=40, l=10, r=10, b=10), coloraxis_colorbar=dict(title="GPA", thickness=10, len=0.7, yanchor="middle", y=0.5, ticks="outside"), uniformtext=dict(minsize=9, mode='hide'))
-        st.plotly_chart(fig_sun, use_container_width=True)
+        
+        if not df_sun.empty and df_sun['so_luong'].sum() > 0:
+            df_sun['Year_Label'] = pd.Categorical(df_sun['Year_Label'], categories=y_order, ordered=True)
+            df_sun['Adapt_Label'] = pd.Categorical(df_sun['Adapt_Label'], categories=a_order, ordered=True)
+            df_sun = df_sun.sort_values(['Year_Label', 'Adapt_Label'])
+            
+            fig_sun = px.sunburst(
+                df_sun, 
+                path=['Year_Label', 'Adapt_Label'], 
+                values='so_luong', 
+                color='gpa_tb', 
+                range_color=[g_min, g_max], 
+                color_continuous_scale='RdYlGn', 
+                title="Phân cấp: Quy mô sinh viên & GPA"
+            )
+            fig_sun.update_traces(
+                insidetextorientation='radial', 
+                leaf=dict(opacity=0.9), 
+                marker=dict(line=dict(color='#FFFFFF', width=1.5)), 
+                hovertemplate="<b>%{label}</b><br>Số lượng: %{value} SV<br>GPA: %{color:.2f}<extra></extra>", 
+                textfont=dict(size=12), 
+                sort=False
+            )
+            fig_sun.update_layout(
+                margin=dict(t=40, l=10, r=10, b=10), 
+                coloraxis_colorbar=dict(title="GPA", thickness=10, len=0.7, yanchor="middle", y=0.5, ticks="outside"), 
+                uniformtext=dict(minsize=9, mode='hide')
+            )
+            st.plotly_chart(fig_sun, use_container_width=True)
+        else:
+            st.info("Dữ liệu không đủ để hiển thị biểu đồ phân cấp.")
