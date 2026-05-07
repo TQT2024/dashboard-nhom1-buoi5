@@ -72,7 +72,7 @@ st.markdown("<h1 class='main-title'>DASHBOARD PHÂN TÍCH KẾT QUẢ HỌC TẬ
 if df_filtered.empty:
     st.warning("⚠️ Không có dữ liệu phù hợp.")
 else:
-    # 3. KPI Section - Tạo hiệu ứng thẻ
+    # 3. KPI Section
     kpi1, kpi2, kpi3 = st.columns(3)
     kpi1.metric("Tổng sinh viên", f"{len(df_filtered):,}")
     kpi2.metric("GPA Trung bình", f"{df_filtered['GPA'].mean():.2f}")
@@ -152,4 +152,6 @@ st.markdown("## 👥 Đánh giá người dùng")
 st.markdown("""
 - **Người dùng 1:** Nhận xét Heatmap hơi khó đọc trên màn hình nhỏ.  
 - **Người dùng 2:** Sunburst phức tạp, khó hiểu khi có nhiều cấp.  
-- **Người dùng 3:** Dashboard dễ dùng
+- **Người dùng 3:** Dashboard dễ dùng, nhưng muốn thêm phần giải thích câu chuyện dữ liệu ngay trên giao diện.  
+
+### 🔧
