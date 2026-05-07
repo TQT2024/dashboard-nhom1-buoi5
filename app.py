@@ -121,7 +121,7 @@ else:
         fig_heat.update_layout(margin=dict(t=50, b=20))
         st.plotly_chart(fig_heat, use_container_width=True)
 
-        with col4:
+    with col4:
         # Sunburst rút gọn: Năm học -> Thích nghi
         df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(
             so_luong='count', gpa_tb='mean').reset_index()
@@ -152,9 +152,4 @@ st.markdown("## 👥 Đánh giá người dùng")
 st.markdown("""
 - **Người dùng 1:** Nhận xét Heatmap hơi khó đọc trên màn hình nhỏ.  
 - **Người dùng 2:** Sunburst phức tạp, khó hiểu khi có nhiều cấp.  
-- **Người dùng 3:** Dashboard dễ dùng, nhưng muốn thêm phần giải thích câu chuyện dữ liệu ngay trên giao diện.  
-
-### 🔧 Điều chỉnh sau phản hồi
-- Thêm hovertemplate cho Heatmap để dễ đọc hơn.  
-- Đơn giản hóa Sunburst chỉ còn 2 cấp (Năm học → Thích nghi).  
-""")
+- **Người dùng 3:** Dashboard dễ dùng
