@@ -96,7 +96,7 @@ else:
     with c1:
         df_bar = df_filtered.groupby('Year_Label', observed=True)['GPA'].mean().reset_index()
         df_bar['Year_Label'] = pd.Categorical(df_bar['Year_Label'], categories=y_order, ordered=True)
-        fig_bar = px.bar(df_bar.sort_values('Year_Label'), x='Year_Label', y='GPA', 
+        fig_bar = px.bar(df_bar.sort_values('Year_Label'), x='Năm học', y='GPA', 
                          text_auto='.2f', title="<b>GPA THEO NĂM HỌC</b>",
                          color_discrete_sequence=[NAVY_BLUE])
         fig_bar.update_traces(textfont_size=20, textposition='outside')
