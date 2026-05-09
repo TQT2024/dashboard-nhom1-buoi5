@@ -117,7 +117,7 @@ else:
         df_corr = df_filtered[['Time_Studying', 'Time_SocicalMedia', 'Adapt_Learning_Uni', 'GPA']].corr()
         fig_heat = px.imshow(df_corr, text_auto='.2f', color_continuous_scale="Blues",
                              title="<b>Ma trận tương quan giữa các yếu tố ảnh hưởng đến GPA</b>",
-                             x=['Học', 'Web', 'Nghi', 'GPA'], y=['Học', 'Web', 'Nghi', 'GPA'])
+                             x=['Thời gian học', 'Thời gian dùng MXH', 'Mức độ thích nghi', 'GPA'], y=['Thời gian học', 'Thời gian dùng MXH', 'Mức độ thích nghi', 'GPA'])
         st.plotly_chart(update_chart_style(fig_heat), use_container_width=True)
 
     with c4:
