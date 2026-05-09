@@ -107,7 +107,9 @@ else:
         df_line = df_filtered.groupby('Time_Label', observed=True)['GPA'].mean().reset_index()
         df_line['Time_Label'] = pd.Categorical(df_line['Time_Label'], categories=s_order, ordered=True)
         fig_line = px.line(df_line.sort_values('Time_Label'), x='Time_Label', y='GPA', 
-                           markers=True, title="<b>GPA THEO GIỜ HỌC</b>")
+                           markers=True, title="<b>GPA THEO GIỜ HỌC</b>",
+                           labels={'Time_Label': 'Thời lượng học', 'GPA': 'GPA'}
+                          )
         fig_line.update_traces(line=dict(color=NAVY_BLUE, width=6), marker=dict(size=15))
         st.plotly_chart(update_chart_style(fig_line), use_container_width=True)
 
