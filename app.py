@@ -45,7 +45,7 @@ def load_data():
     df.columns = df.columns.str.strip()
     cols = ['Year', 'GPA', 'Time_Studying', 'Gender', 'Adapt_Learning_Uni', 'Time_SocicalMedia']
     df = df.dropna(subset=cols)
-    df = df[(df['GPA'] >= 0) & (df['GPA'] <= 5.0)]
+    df = df[(df['GPA'] >= 0) & (df['GPA'] <= 3.0)]
 
     ym = {1: 'Năm 1', 2: 'Năm 2', 3: 'Năm 3', 4: 'Năm 4', 5: 'Đã tốt nghiệp'}
     sm = {1: '< 2h', 2: '2-4h', 3: '4-6h', 4: '6-8h', 5: '> 8h'}
