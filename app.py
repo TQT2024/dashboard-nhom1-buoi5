@@ -139,5 +139,13 @@ else:
 # 4. Footer & Story
 st.markdown("---")
 st.markdown("### 📖 TÓM TẮT KẾT QUẢ")
-st.info("1. Chất lượng giảng viên ảnh hưởng lớn nhất đến GPA. \n2. Sinh viên năm cuối có GPA ổn định hơn nhóm mới thích nghi.")
+st.info(
+"""1. Chất lượng giảng viên ảnh hưởng lớn nhất đến GPA.
+2. Sinh viên năm cuối có GPA ổn định hơn nhóm mới thích nghi.
+3. Thời lượng học tập mỗi ngày có xu hướng tác động tích cực đến GPA của sinh viên.
+4. Sinh viên có khả năng thích nghi tốt thường đạt kết quả học tập cao và ổn định hơn.
+5. Thời gian sử dụng mạng xã hội có dấu hiệu ảnh hưởng tiêu cực đến hiệu suất học tập.
+6. Phần lớn sinh viên tập trung ở mức học lực Khá và Trung bình, trong khi tỷ lệ đạt mức Tốt còn chưa cao.
+7. GPA có xu hướng cải thiện dần theo năm học nhờ kinh nghiệm và khả năng thích nghi với môi trường đại học."""
+)
 st.caption("© 2026 Hệ thống Dashboard Trình chiếu")
