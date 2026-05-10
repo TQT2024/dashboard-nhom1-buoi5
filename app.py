@@ -124,7 +124,7 @@ else:
 
     with c4:
         df_pie = df_filtered.groupby('Adapt_Label', observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
-        st.write(df_pie)  # debug
+        #st.write(df_pie)  # debug
         fig_pie = px.pie(
             df_pie,
             names='Adapt_Label',
