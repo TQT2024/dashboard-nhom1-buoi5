@@ -122,18 +122,51 @@ else:
         st.plotly_chart(update_chart_style(fig_heat), use_container_width=True)
 
     with c4:
+        # Nhóm dữ liệu và tính toán
         df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
+        
+        # 1. Kỹ thuật Lọc ngưỡng (Thresholding): Loại bỏ các nhóm có dưới 5 sinh viên (Nhiễu thống kê)
+        df_sun = df_sun[df_sun['so_luong'] >= 5].dropna(subset=['gpa_tb'])
+        
+        # Đổi tên cột để hiển thị đẹp trên Hover
         df_sun = df_sun.rename(columns={'gpa_tb': 'GPA'})
+        
+        # 2. Khởi tạo biểu đồ Sunburst
         fig_sun = px.sunburst(
             df_sun,
             path=['Year_Label', 'Adapt_Label'],
             values='so_luong',
             color='GPA',
             color_continuous_scale="Blues",
-            title="<b>Phân bố GPA dựa trên năm học và khả năng thích nghi</b>",
-            hover_data={'GPA': ':.2f'}
+            range_color=[1, 5], # Khóa cứng thang màu theo chuẩn thang đo 1-5 của Codebook
+            title="<b>Phân bố GPA dựa trên năm học và khả năng thích nghi</b>"
         )
-        st.plotly_chart(update_chart_style(fig_sun), use_container_width=True)
+        
+        # Cấu hình giao diện chi tiết
+        fig_sun.update_traces(
+            insidetextorientation='radial',
+            leaf=dict(opacity=0.9),
+            marker=dict(line=dict(color='#FFFFFF', width=1.5)),
+            hovertemplate="<b>%{label}</b><br>Số lượng: %{value} SV<br>GPA Trung bình: %{color:.2f}<extra></extra>",
+            textfont=dict(size=14)
+        )
+        
+        # Ẩn nhãn nếu cung tròn quá nhỏ để tránh chồng chéo chữ
+        fig_sun.update_layout(
+            margin=dict(t=80, b=50, l=10, r=10),
+            title_font=dict(size=24, color="#1a5276"),
+            coloraxis_colorbar=dict(
+                title="Mức GPA", 
+                thickness=15, 
+                len=0.8, 
+                yanchor="middle", 
+                y=0.5, 
+                ticks="outside"
+            ),
+            uniformtext=dict(minsize=12, mode='hide')
+        )
+        
+        st.plotly_chart(fig_sun, use_container_width=True)
 
 # 4. Footer & Story
 st.markdown("---")
