@@ -124,9 +124,16 @@ else:
 
     with c4:
         df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
-        fig_sun = px.sunburst(df_sun, path=['Year_Label', 'Adapt_Label'], values='so_luong', 
-                              color='gpa_tb', color_continuous_scale="Blues",
-                              title="<b>Phân bố GPA dựa trên năm học và khả năng thích nghi</b>")
+        df_sun = df_sun.rename(columns={'gpa_tb': 'GPA'})
+        fig_sun = px.sunburst(
+            df_sun,
+            path=['Year_Label', 'Adapt_Label'],
+            values='so_luong',
+            color='GPA',
+            color_continuous_scale="Blues",
+            title="<b>Phân bố GPA dựa trên năm học và khả năng thích nghi</b>",
+            hover_data={'GPA': ':.2f'}
+        )
         st.plotly_chart(update_chart_style(fig_sun), use_container_width=True)
 
 # 4. Footer & Story
