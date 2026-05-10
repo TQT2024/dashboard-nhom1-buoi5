@@ -124,22 +124,18 @@ else:
 
     with c4:
         df_pie = df_filtered.groupby('Adapt_Label', observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
-        st.write(df_pie)  # Debug xem dataframe hợp lệ chưa
-    
+        st.write(df_pie)  # debug
         fig_pie = px.pie(
             df_pie,
             names='Adapt_Label',
             values='so_luong',
-            color='gpa_tb',
-            color_continuous_scale='Blues',
-            hover_data={'gpa_tb': ':.2f'},  # hover hiện GPA trung bình làm tròn 2 số
-            title="<b>Phân bố sinh viên & GPA theo mức độ thích nghi</b>",
+            hover_data={'gpa_tb': ':.2f'},
+            title="<b>Phân bố sinh viên theo mức độ thích nghi</b>",
         )
         fig_pie.update_traces(
             textposition='inside',
             textinfo='percent+label',
-            pull=[0.04]*len(df_pie),
-            marker=dict(line=dict(color='#fff', width=2))
+            pull=[0.04]*len(df_pie)
         )
         st.plotly_chart(update_chart_style(fig_pie), use_container_width=True)
 
