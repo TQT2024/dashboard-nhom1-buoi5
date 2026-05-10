@@ -97,7 +97,7 @@ else:
         df_bar = df_filtered.groupby('Year_Label', observed=True)['GPA'].mean().reset_index()
         df_bar['Year_Label'] = pd.Categorical(df_bar['Year_Label'], categories=y_order, ordered=True)
         fig_bar = px.bar(df_bar.sort_values('Year_Label'), x='Year_Label', y='GPA', 
-                         text_auto='.2f', title="<b>GPA THEO NĂM HỌC</b>",
+                         text_auto='.2f', title="<b>GPA trung bình theo từng năm họcC</b>",
                          color_discrete_sequence=[NAVY_BLUE],
                          labels={'Year_Label': 'Năm học', 'GPA': 'GPA'})
         fig_bar.update_traces(textfont_size=20, textposition='outside')
@@ -107,7 +107,7 @@ else:
         df_line = df_filtered.groupby('Time_Label', observed=True)['GPA'].mean().reset_index()
         df_line['Time_Label'] = pd.Categorical(df_line['Time_Label'], categories=s_order, ordered=True)
         fig_line = px.line(df_line.sort_values('Time_Label'), x='Time_Label', y='GPA', 
-                           markers=True, title="<b>GPA THEO GIỜ HỌC</b>",
+                           markers=True, title="<b>GPA trung bình theo thời gian họcC</b>",
                            labels={'Time_Label': 'Thời lượng học', 'GPA': 'GPA'}
                           )
         fig_line.update_traces(line=dict(color=NAVY_BLUE, width=6), marker=dict(size=15))
@@ -130,7 +130,7 @@ else:
             names='Adapt_Label',
             values='so_luong',
             hover_data={'gpa_tb': ':.2f'},
-            title="<b>Phân bố sinh viên theo mức độ thích nghi</b>",
+            title="<b>Phân bố GPA của sinh viên theo mức độ thích nghi</b>",
         )
         fig_pie.update_traces(
             textposition='inside',
