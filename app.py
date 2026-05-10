@@ -64,7 +64,6 @@ with st.sidebar:
     st.header("⚙️ Cấu hình")
     gender_filter = st.selectbox("Lọc Giới tính", ["Tất cả", "Nam", "Nữ"])
     st.markdown("---")
-    st.write("Dùng cho trình chiếu hội trường")
 
 df_filtered = df_main if gender_filter == "Tất cả" else df_main[df_main['Gender_Label'] == gender_filter]
 
@@ -148,4 +147,4 @@ st.info(
 6. Phần lớn sinh viên tập trung ở mức học lực Khá và Trung bình, trong khi tỷ lệ đạt mức Tốt còn chưa cao.
 7. GPA có xu hướng cải thiện dần theo năm học nhờ kinh nghiệm và khả năng thích nghi với môi trường đại học."""
 )
-st.caption("© 2026 Hệ thống Dashboard Trình chiếu")
+st.caption("© 2026 Nhom 1")
