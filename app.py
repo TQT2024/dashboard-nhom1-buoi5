@@ -123,11 +123,24 @@ else:
         st.plotly_chart(update_chart_style(fig_heat), use_container_width=True)
 
     with c4:
-        df_sun = df_filtered.groupby(['Year_Label', 'Adapt_Label'], observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
-        fig_sun = px.sunburst(df_sun, path=['Year_Label', 'Adapt_Label'], values='so_luong', 
-                              color='gpa_tb', color_continuous_scale="Blues",
-                              title="<b>CƠ CẤU PHÂN CẤP</b>")
-        st.plotly_chart(update_chart_style(fig_sun), use_container_width=True)
+        # Nhóm dữ liệu theo mức độ thích nghi, lấy số lượng & GPA trung bình
+        df_pie = df_filtered.groupby('Adapt_Label', observed=True)['GPA'].agg(so_luong='count', gpa_tb='mean').reset_index()
+        fig_pie = px.pie(
+            df_pie,
+            names='Adapt_Label',
+            values='so_luong',
+            color='gpa_tb',
+            color_continuous_scale="Blues",
+            hover_data=['gpa_tb'],
+            title="<b>Phân bố sinh viên & GPA theo mức độ thích nghi</b>",
+        )
+        fig_pie.update_traces(
+            textposition='inside',
+            textinfo='percent+label',
+            pull=[0.03]*len(df_pie),  # tạo highlight nhẹ từng lát
+            marker=dict(line=dict(color='#fff', width=2))
+        )
+        st.plotly_chart(update_chart_style(fig_pie), use_container_width=True)
 
 # 4. Footer & Story
 st.markdown("---")
