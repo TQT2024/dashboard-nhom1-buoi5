@@ -68,7 +68,7 @@ with st.sidebar:
 # Lọc dữ liệu theo phân loại giới tính
 df_filtered = df_main if gender_filter == "Tất cả" else df_main[df_main['Gender_Label'] == gender_filter]
 
-st.markdown("<h1 class='academic-title'>Hệ thống phân tích các nhân tố ảnh hưởng đến kết quả học tập của sinh viên</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='academic-title'>Dashboard phân tích các nhân tố ảnh hưởng đến kết quả học tập của sinh viên</h1>", unsafe_allow_html=True)
 
 if df_filtered.empty:
     st.error("Dữ liệu không tồn tại cho bộ lọc này.")
@@ -83,7 +83,7 @@ else:
 
     k1.metric("Tổng số quan sát (n)", f"{total_obs:,}")
     k2.metric("Tỷ lệ học lực từ Giỏi trở lên (%)", f"{ratio:.1f}%")
-    k3.metric("Mức độ thích nghi phổ biến (Yếu vị)", df_filtered['Adapt_Label'].mode()[0])
+    k3.metric("Mức độ thích nghi phổ biến", df_filtered['Adapt_Label'].mode()[0])
 
     st.write("")
 
@@ -138,12 +138,26 @@ else:
         fig_sun.update_traces(hovertemplate="<b>%{label}</b><br>Số lượng: %{value} SV<br>Mức GPA TB: %{color:.2f}")
         st.plotly_chart(apply_academic_style(fig_sun, "Cấu trúc phân lớp học lực theo tiến trình năm học và khả năng thích nghi"), use_container_width=True)
 
-# --- TỔNG KẾT ---
-st.markdown("---")
-st.markdown("### Phân tích kết quả nghiên cứu")
-st.info(
-"""1. **Về phân phối học lực:** Kết quả học tập có xu hướng ổn định và đạt mức cao hơn ở giai đoạn sinh viên năm cuối và sau tốt nghiệp.
-2. **Về tương quan hành vi:** Thời lượng tự học và khả năng thích nghi môi trường có mối liên hệ thuận chiều với kết quả học tập.
-3. **Về nhân tố ảnh hưởng:** Thời gian sử dụng mạng xã hội cho thấy xu hướng tác động tiêu cực đến mức học lực tích lũy của sinh viên."""
-)
-st.caption("Hệ thống trực quan hóa dữ liệu phục vụ nghiên cứu khoa học - Nhóm 1")
+    # --- TỔNG KẾT ĐỘNG (CONTEXTUAL INSIGHTS) ---
+    st.markdown("---")
+    st.markdown(f"### Phân tích kết quả nghiên cứu (Nhóm: {gender_filter})")
+    
+    # 1. Khai thác dữ liệu để sinh câu nhận định
+    avg_gpa = df_filtered['GPA'].mean()
+    social_corr = df_corr.loc['Time_SocicalMedia', 'GPA']
+    study_corr = df_corr.loc['Time_Studying', 'GPA']
+    adapt_mode = df_filtered['Adapt_Label'].mode()[0]
+
+    # 2. Logic điều kiện để thay đổi câu chữ
+    gpa_text = "có xu hướng đạt mức khá/giỏi ổn định" if avg_gpa >= 3.2 else "tập trung chủ yếu ở mức trung bình - khá"
+    social_text = "tác động tiêu cực đáng kể" if social_corr < -0.05 else "chưa thể hiện sự ảnh hưởng tiêu cực rõ rệt"
+    study_text = "có mối liên hệ thuận chiều (tích cực)" if study_corr > 0 else "chưa thấy rõ mối liên hệ thuận chiều"
+
+    # 3. Hiển thị thông tin
+    st.info(f"""
+    1. **Về phân phối học lực:** Kết quả học tập của nhóm khảo sát ({gender_filter}) {gpa_text} với mức đánh giá trung bình đạt {avg_gpa:.2f}/5.0.
+    2. **Về tương quan hành vi:** Thời lượng tự học {study_text} với kết quả học tập (Hệ số Spearman: {study_corr:.2f}). Đồng thời, mức độ thích nghi phổ biến nhất của nhóm này là **{adapt_mode}**.
+    3. **Về nhân tố ảnh hưởng:** Thời gian sử dụng mạng xã hội cho thấy {social_text} đến mức học lực tích lũy của sinh viên (Hệ số Spearman: {social_corr:.2f}).
+    """)
+    
+    st.caption(f"Nhom 1 Bai tap buoi 5 | Tổng số mẫu phân tích hiện tại: n = {total_obs}")
